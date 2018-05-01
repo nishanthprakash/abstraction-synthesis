@@ -37,9 +37,11 @@ Actions
 
 ")
   (:use common-lisp
-	utils
-	maze-mdp
-  maze-mdp-env)
+	;utils
+	;maze-mdp
+  create-env
+  ;env
+  )
 
 
   (:export <fractal-office>
@@ -52,8 +54,8 @@ Actions
 	   E
 	   W
 	   pos
-	   dest
-	   env
+	   dst
+	   nv
 	   ))
 
 (in-package fractal-office)
@@ -68,16 +70,20 @@ Actions
   ;pass-source
   dst
   ;fuel
-  ;env
-  )
+  nv)
 
 
 
 
-(defclass <fractal-office> (<maze-mdp-env>)
+(defclass <fractal-office> (<fully-observable-env>)
   ;((m :type maze-mdp:<maze-mdp>))
   ((dest  :initarg :dest
-          :reader destination))
+          :reader destination)
+  (m :initarg :maze-mdp
+      :reader maze-mdp)
+  (init-prob-dist :initarg :init-dist
+       :reader init-dist
+       :type prob:<prob-dist>))
   (:documentation "
 Constructor for <fractal-office>"))
 
@@ -148,16 +154,34 @@ Constructor for <fractal-office>"))
   (let*
       ((curr-mdp-state (prob:sample (init-dist e))))
       (make-fractal-office-state
-        :pos curr-mdp-state)))
+        :pos curr-mdp-state
+        :dst nil
+        :nv e)))
 
 
 (defmethod sample-next ((e <fractal-office>) s a)
   (let* 
     ((m (maze-mdp e))
-    (curr-mdp-state (prob:sample (maze-mdp:trans-dist m s a)))
+    (prev-mdp-state (pos s))
+    (curr-mdp-state (prob:sample (maze-mdp:trans-dist m prev-mdp-state a)))
     (curr-env-state (make-fractal-office-state
-        :pos curr-mdp-state)))
-    (values curr-env-state (maze-mdp:reward m (pos s) a curr-mdp-state))))
+        :pos curr-mdp-state
+        :dst nil
+        :nv e)))
+    (values curr-env-state (maze-mdp:reward m prev-mdp-state a curr-mdp-state))))
+
+(defmethod is-terminal-state ((e <fractal-office>) s)
+  nil)
+
+(defmethod avail-actions ((e <fractal-office>) s)
+  (let* 
+    ((m (maze-mdp e))
+    (mdp-state (pos s)))
+    (maze-mdp:avail-actions m mdp-state)))
+
+
+;(defmethod get-state ((e <fractal-office>)) 
+;  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; other methods on states
@@ -183,7 +207,7 @@ Constructor for <fractal-office>"))
 
 (defmethod print-object ((s fractal-office-state) str)
   (let*
-    ((wm (grid-world:world-map (maze-mdp (env s))))
+    ((wm (grid-world:world-map (maze-mdp (nv s))))
     (dim (first (array-dimensions wm))))
     (loop 
       ;with e = (env s)

@@ -27,6 +27,8 @@
 
 ; (do-symbols (s (find-package "CL-USER")) (when (search "TAXI" (symbol-name `,s)) (print s)))
 
+; (do-symbols (s (find-package "CL-USER")) (when (search "ENV" (symbol-name `,s)) (print s)))
+
 (in-package cl-user)
 
 ;(let 
@@ -67,7 +69,11 @@
 
 
 (setf e (fractal-office:make-fractal-office 0))
+
+(in-package fractal-office)
+(setf e (make-fractal-office 0))
 (rl-user:io-interface e)
+
 
 
 (maze-mdp:avail-actions (maze-mdp-env:maze-mdp e) '(2 3))
