@@ -67,7 +67,7 @@
 
 
 (setf e (fractal-office:make-fractal-office 0))
-(rl-user:io-interface e2)
+(rl-user:io-interface e)
 
 
 (maze-mdp:avail-actions (maze-mdp-env:maze-mdp e) '(2 3))
@@ -88,8 +88,19 @@
 (maze-mdp:avail-actions (maze-mdp-env:maze-mdp e2) '(2 3))
 
 
-
+(grid-world:world-map (maze-mdp-env:maze-mdp e2))
 
 (setf e (td-taxi-env:make-example-env1))
 
+(env:get-state e)
+
 ; grid-world:N
+
+
+
+(let ((multiple-value-bind (a b) (values 1 2))) (values a b))
+
+(multiple-value-setq (a b) (values 1 2))
+
+(let ((multiple-value-bind (c d) (values 1 2))) c)
+
