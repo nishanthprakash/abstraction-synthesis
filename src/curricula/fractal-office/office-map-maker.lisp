@@ -1,5 +1,4 @@
-(in-package cl-user)
-
+(in-package fractal-office)
 
 (defun print-office (office)
 	(let
