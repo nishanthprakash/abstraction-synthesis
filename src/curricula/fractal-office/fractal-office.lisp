@@ -46,7 +46,7 @@ Actions
      make-fractal-office
      make-office-env
      make-office-map
-     valid-states ; delete this later
+     ;valid-states ; delete this later
 	   N
 	   S
 	   E
@@ -91,10 +91,16 @@ Constructor for <fractal-office>"))
 ;          :collision-cost collision-cost 
 ;          :cost-of-living cost-of-living))))
 
-;(defun make-office-env ()
+(defun make-office-env (wm)
+  (let 
+    ((m (maze-mdp:make-maze-mdp wm :allow-rests nil)))
+    (make-instance '<fractal-office> :init-dist (prob:make-unif-dist-over-set (valid-states wm)) :maze-mdp m)))
+
 
 (defun make-fractal-office (depth)
-  (make-office-env (make-office-map depth)))
+  (let 
+    ((wm (make-office-map depth)))
+    (make-office-env wm)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -119,7 +125,7 @@ Constructor for <fractal-office>"))
 
 
 
-(defun print-office-state ((s fractal-office-state) str)
+(defmethod print-object ((s fractal-office-state) str)
   (let
     ((dim (first (array-dimensions office))))
     (loop 
