@@ -4,6 +4,7 @@
 
 (uiop:with-current-directory ("/Users/np/Projects/AbstractionSynthesis/programmable-reinforcement-learning/lisp/")
 	(load "hrl-system.lisp")
-	(make-all)
+	(make-all))
 
-	(load "test/test-all.lisp"))
+	;(load "test/test-all.lisp"))
+
