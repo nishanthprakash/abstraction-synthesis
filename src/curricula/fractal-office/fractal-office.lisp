@@ -77,7 +77,7 @@ Actions
 
 (defclass <fractal-office> (<fully-observable-env>)
   ;((m :type maze-mdp:<maze-mdp>))
-  ((dest  :initarg :dest
+  ((destination :initarg :destination
           :reader destination)
   (m :initarg :maze-mdp
       :reader maze-mdp)
@@ -109,9 +109,10 @@ Constructor for <fractal-office>"))
 ;          :cost-of-living cost-of-living))))
 
 (defun make-office-env (wm)
-  (let 
-    ((m (maze-mdp:make-maze-mdp wm :allow-rests nil)))
-    (make-instance '<fractal-office> :init-dist (prob:make-unif-dist-over-set (valid-states wm)) :maze-mdp m)))
+  (let*
+    ((m (maze-mdp:make-maze-mdp wm :allow-rests nil))
+    (st (funcall (grid-world:unif-grid-dist-sampler m))))
+    (make-instance '<fractal-office> :init-dist (prob:make-unif-dist-over-set (valid-states wm)) :maze-mdp m :destination st)))
 
 
 (defun make-fractal-office (depth)
@@ -155,7 +156,7 @@ Constructor for <fractal-office>"))
       ((curr-mdp-state (prob:sample (init-dist e))))
       (make-fractal-office-state
         :pos curr-mdp-state
-        :dst nil
+        :dst (destination e)
         :nv e)))
 
 
@@ -166,12 +167,12 @@ Constructor for <fractal-office>"))
     (curr-mdp-state (prob:sample (maze-mdp:trans-dist m prev-mdp-state a)))
     (curr-env-state (make-fractal-office-state
         :pos curr-mdp-state
-        :dst nil
+        :dst (destination e)
         :nv e)))
     (values curr-env-state (maze-mdp:reward m prev-mdp-state a curr-mdp-state))))
 
 (defmethod is-terminal-state ((e <fractal-office>) s)
-  nil)
+  (equal (dst s) (pos s)))
 
 (defmethod avail-actions ((e <fractal-office>) s)
   (let* 
@@ -221,6 +222,8 @@ Constructor for <fractal-office>"))
             (format str "X"))
           ((equal (pos s) (list i j))
             (format str "O"))
+          ((equal (dst s) (list i j))
+            (format str "*"))
           (t (format str " ")))))))
 
 (in-package common-lisp-user)
