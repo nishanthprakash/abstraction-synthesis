@@ -1,0 +1,98 @@
+(defun nav (loc)
+  (until (equal (pos) loc)
+    (with-choice nav-choice (dir '(N E S W))
+		 (action nav-move dir))))
+
+(defun get-pass ()
+  (call nav-src (nav (passenger-src)))
+  (action pickup 'P))
+
+(defun put-pass ()
+  (call nav-dest (nav (passenger-dest)))
+  (action dropoff 'D))
+
+
+(defun td-taxi-prog ()
+  (loop 
+    (choose task-choice
+	    (call (get-pass))
+	    (call (put-pass)))))
+
+
+(defun l0 () 
+  (let* 
+      ((axcall (lambda (x) (if (or (and (is-node x) (has-children x tree)) (x 'l1)) 'call 'action)))
+      (l1goals (level-goals 1 tree))
+      (l1goal-axns (map get-bottleneck-actions l1-goals)))
+      (loop
+        (with-choice l0-choice (l1-pick (concatenate l1goals l1goal-axns l1))
+          ((axcall l1-pick) l1-do l1-pick)))))
+
+
+
+
+(defun l0-l1 () 
+  
+
+
+
+
+(defun l0 ()
+  
+
+
+    (expand l1-bn-start))
+
+(defun l0)
+
+      l0-a0
+
+
+
+
+      ()
+      (call (get-pass))
+      (call (put-pass)))))
+
+;pred is task specific
+
+At level 0 loop choices over goto-level1-bottlenecks
+
+
+
+
+
+
+opp door, right door, left door
+
+
+
+
+
+
+(defun l0 () 
+  (let* 
+      ((axcall (lambda (x) (if (or (and (is-node x) (has-children x tree)) (x 'l1)) 'call 'action)))
+      (l1goals (level-goals 1 tree))
+      (l1goal-axns (map get-bottleneck-actions l1-goals)))
+      (loop
+        (with-choice l0-choice (l1-pick (concatenate l1goals l1goal-axns l1))
+          ((axcall l1-pick) l1-do l1-pick)))))
+
+
+
+
+(setf macro-actions (('l2-b1 'l2-b2 'l2-b3 'l2-b4 'l2-b5 'l2-b6) ('l1-b1 'l1-b2 'l1-b3 'l1-b4 'l1-b5 'l1-b6) ('N 'S 'E 'W)))
+
+
+(defmacro synthesize (mactions)
+  (let* 
+    ((num-levels (list-length mactions)))
+    (loop for i from 0 to (- num-levels 1) do
+      `(level ,i mactions)
+  ))
+
+
+
+(defmacro level)
+(nth i mactions)
