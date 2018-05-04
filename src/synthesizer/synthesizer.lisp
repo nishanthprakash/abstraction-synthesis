@@ -7,7 +7,8 @@
   (:use 
    common-lisp)
   (:export
-   synthesize))
+   synthesize
+   ))
 
 (in-package synthesizer)
 
@@ -28,6 +29,9 @@
       `(defun ,level-fn () 'levelfn-called)))
 
 
-(macroexpand-1 '(gen-macro 1 (1 2 3)))
+;(macroexpand-1 '(gen-macro 1 (1 2 3)))
 
-(macroexpand-1 '(synthesize (1 2 3)))
+;(macroexpand-1 '(synthesize (1 2 3)))
+
+;(defun get-curr-package ()
+;   (print *PACKAGE*))
