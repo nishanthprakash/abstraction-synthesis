@@ -148,7 +148,7 @@ Constructor for <fractal-office>"))
 ;      ;(values st rwd)))
 ;      (values curr-state rwd))))
 
-
+(defparameter *avail-actions* '(N E S W))
 
 
 (defmethod sample-init ((e <fractal-office>))
@@ -159,26 +159,33 @@ Constructor for <fractal-office>"))
         :dst (destination e)
         :nv e)))
 
+(defmethod reset-to-state ((e <fractal-office>) s)
+  (set-state s e))
+
+(defmethod reset ((e <fractal-office>) &optional reset-to-nonterminal-state)
+  (set-state (sample-init e) e))
 
 (defmethod sample-next ((e <fractal-office>) s a)
   (let* 
-    ((m (maze-mdp e))
+    ((mdp-action (cond ((eq a 'N) 'grid-world:N) ((eq a 'S) 'grid-world:S) ((eq a 'E) 'grid-world:E) ((eq a 'W) 'grid-world:W) (t nil) ))
+    (m (maze-mdp e))
     (prev-mdp-state (pos s))
-    (curr-mdp-state (prob:sample (maze-mdp:trans-dist m prev-mdp-state a)))
+    (curr-mdp-state (prob:sample (maze-mdp:trans-dist m prev-mdp-state mdp-action)))
     (curr-env-state (make-fractal-office-state
         :pos curr-mdp-state
         :dst (destination e)
         :nv e)))
-    (values curr-env-state (maze-mdp:reward m prev-mdp-state a curr-mdp-state))))
+    (values curr-env-state (maze-mdp:reward m prev-mdp-state mdp-action curr-mdp-state))))
 
 (defmethod is-terminal-state ((e <fractal-office>) s)
   (equal (dst s) (pos s)))
 
 (defmethod avail-actions ((e <fractal-office>) s)
-  (let* 
-    ((m (maze-mdp e))
-    (mdp-state (pos s)))
-    (maze-mdp:avail-actions m mdp-state)))
+  *avail-actions*)
+  ;(let* 
+  ;   ((m (maze-mdp e))
+  ;  (mdp-state (pos s)))
+  ;  (maze-mdp:avail-actions m mdp-state)))
 
 
 ;(defmethod get-state ((e <fractal-office>)) 
@@ -225,5 +232,10 @@ Constructor for <fractal-office>"))
           ((equal (dst s) (list i j))
             (format str "*"))
           (t (format str " ")))))))
+
+(defmethod canonicalize ((s fractal-office-state))
+  "convert to list"
+  (list 'pos (pos s) 'dst (dst s)))
+
 
 (in-package common-lisp-user)

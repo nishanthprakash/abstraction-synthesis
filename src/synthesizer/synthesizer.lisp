@@ -12,7 +12,7 @@
 
 (in-package synthesizer)
 
-(setf macro-actions (('N 'S 'E 'W) ('l1-b1 'l1-b2 'l1-b3 'l1-b4 'l1-b5 'l1-b6) ('l2-b1 'l2-b2 'l2-b3 'l2-b4 'l2-b5 'l2-b6)))
+;(setf macro-actions (('N 'S 'E 'W) ('l1-b1 'l1-b2 'l1-b3 'l1-b4 'l1-b5 'l1-b6) ('l2-b1 'l2-b2 'l2-b3 'l2-b4 'l2-b5 'l2-b6)))
 
 (defmacro synthesize (mactions)
    (let* 

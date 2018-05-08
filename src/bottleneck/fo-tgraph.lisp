@@ -6,6 +6,8 @@
 
 (in-package fo-tgraph)
 
+(defparameter *default-dim* 13)
+
 ;(defvar *graph* (graph:populate (make-instance 'graph:graph)
 ;	:nodes '(1 2 3 4 5 6 7)
 ;	:edges-w-values '(((1 2) . 3)
@@ -71,12 +73,12 @@
 		(loop for j from 0 upto (- dim 1) by (get-step level) append
 			`((,i ,j)))))
 
-(defun lnearest (level pos dim)
+(defun lnearest (level pos &optional (dim *default-dim*))
 	(let* 
 		((bns (bottlenecks level dim)))
 		(reduce (lambda (x y) (if (< (sq-dist pos y) (sq-dist pos x)) y x)) bns)))
 
-(defun lactions (level pos dim)
+(defun lactions (level pos &optional (dim *default-dim*))
 	(let* 
 		((vbns (vertical-bottlenecks level dim))
 		(hbns (horizontal-bottlenecks level dim))
@@ -96,8 +98,8 @@
 					(list (/ a1 2) (- (/ a1 2))) 
 					(list (- (/ a1 2)) (- (/ a1 2))))))
 		(cond 
-			((member pos vbns :test 'equal) (remove-if-not (lambda (x) (and (< (first x) dim) (< (second x) dim))) (map 'list (lambda (x) (list (+ (first pos) (first x)) (+ (second pos) (second x)))) vacts)))
-			((member pos hbns :test 'equal) (remove-if-not (lambda (x) (and (< (first x) dim) (< (second x) dim))) (map 'list (lambda (x) (list (+ (first pos) (first x)) (+ (second pos) (second x)))) hacts)))
+			((member pos vbns :test 'equal) (remove-if-not (lambda (x) (and (< (first x) dim) (< (second x) dim) (>= (first x) 0) (>= (second x) 0))) (map 'list (lambda (x) (list (+ (first pos) (first x)) (+ (second pos) (second x)))) vacts)))
+			((member pos hbns :test 'equal) (remove-if-not (lambda (x) (and (< (first x) dim) (< (second x) dim) (>= (first x) 0) (>= (second x) 0))) (map 'list (lambda (x) (list (+ (first pos) (first x)) (+ (second pos) (second x)))) hacts)))
 			(t nil))))
 
 (defun sq(n) (* n n))

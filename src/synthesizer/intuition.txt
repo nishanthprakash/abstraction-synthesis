@@ -96,3 +96,15 @@ opp door, right door, left door
 
 (defmacro level)
 (nth i mactions)
+
+
+
+----------------
+
+Required: 
+  transition graph, 
+  partial ordering of states w.r.t bottleneckness (using something like Qcut)
+
+Algos:
+  transition graphs w.r.t different levels
+  develop hierarchies w.r.t lnearest and lactions

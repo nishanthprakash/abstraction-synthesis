@@ -3,15 +3,15 @@
 
 ;library sources from ~/.local/share/common-lisp/source
 
-(asdf:operate 'asdf:load-op 'alexandria)
+;(asdf:operate 'asdf:load-op 'alexandria)
 
-(asdf:operate 'asdf:load-op 'metabang-bind)
+;(asdf:operate 'asdf:load-op 'metabang-bind)
 
-(asdf:operate 'asdf:load-op 'named-readtables)
+;(asdf:operate 'asdf:load-op 'named-readtables)
 
-(asdf:operate 'asdf:load-op 'curry-compose-reader-macros)
+;(asdf:operate 'asdf:load-op 'curry-compose-reader-macros)
 
-(asdf:operate 'asdf:load-op 'graph)
+;(asdf:operate 'asdf:load-op 'graph)
 
 (asdf:operate 'asdf:load-op 'hrl)
 
