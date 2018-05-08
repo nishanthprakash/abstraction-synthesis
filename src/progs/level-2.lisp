@@ -1,12 +1,16 @@
-(defpackage fractal-office-prog
+(defpackage level-2
   (:documentation "Alisp program for Fractal Office domain.")
 
-  (:use td-taxi-env
+  (:use 
+  	fractal-office
 	common-lisp
 	utils
-	alisp-prog)
+	alisp-prog
+	;fo-tgraph
+	)
 
-  (:export fractal-office-prog
+  (:export
+  	level-2
 ;	   N
 ;	   S
 ;	   E
@@ -25,15 +29,15 @@
 ;	   put-pass
 ))
 
-(in-package fractal-office-prog)
+(in-package level-2)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; access functions for state
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def-env-accessor dst dst)
-(def-env-accessor pos pos)
+(def-env-accessor dstn dst)
+(def-env-accessor posn pos)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -41,27 +45,29 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun level-0 (loc)
-	(until (equal pos loc)
+	(until (equal (posn) loc)
 		(with-choice l0-acts (pick '(N S E W))
 			(action primitive pick))))
 
 
 (defun level-1 (loc)
 	(let* 
-		((lpos (lnearest 1 pos))
-		(lacts (lactions 1 lpos))
-		(lnacts (concatenate lacts loc)))
-		(until (equal pos loc)
+		((lpos (fo-tgraph:lnearest 1 (posn)))
+		(lacts (fo-tgraph:lactions 1 lpos))
+		(lnacts (append lacts (list loc))))
+		(until (equal (posn) loc)
+			;(format t lnacts)
 			(with-choice l1-acts (pick lnacts)
 				(call (level-0 pick))))))
 
 
 (defun level-2 ()
 	(let* 
-		((lpos (lnearest 2 pos))
-		(lacts (lactions 2 lpos))
-		(lnacts (concatenate lacts loc)))
-		(until (equal pos dst)
+		((lpos (fo-tgraph:lnearest 2 (posn)))
+		(lacts (fo-tgraph:lactions 2 lpos))
+		(lnacts (append lacts (list (dstn)))))
+		(until (equal (posn) (dstn))
+			;(format t lnacts)
 			(with-choice l2-acts (pick lnacts)
 				(call (level-1 pick))))))
 

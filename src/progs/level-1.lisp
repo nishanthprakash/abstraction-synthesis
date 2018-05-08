@@ -1,12 +1,16 @@
-(defpackage fractal-office-prog
+(defpackage level-1
   (:documentation "Alisp program for Fractal Office domain.")
 
-  (:use td-taxi-env
+  (:use 
+  	fractal-office
 	common-lisp
 	utils
-	alisp-prog)
+	alisp-prog
+	;fo-tgraph
+	)
 
-  (:export fractal-office-prog
+  (:export
+  	level-1
 ;	   N
 ;	   S
 ;	   E
@@ -25,15 +29,15 @@
 ;	   put-pass
 ))
 
-(in-package fractal-office-prog)
+(in-package level-1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; access functions for state
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def-env-accessor dst dst)
-(def-env-accessor pos pos)
+(def-env-accessor dstn dst)
+(def-env-accessor posn pos)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -41,7 +45,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun level-0 (loc)
-	(until (equal pos loc)
+	(until (equal (posn) loc)
 		(with-choice l0-acts (pick '(N S E W))
 			(action primitive pick))))
+
+
+(defun level-1 ()
+	(let* 
+		((lpos (fo-tgraph:lnearest 1 (posn)))
+		(lacts (fo-tgraph:lactions 1 lpos))
+		(lnacts (append lacts (list (dstn)))))
+		(until (equal (posn) (dstn))
+			;(format t lnacts)
+			(with-choice l1-acts (pick lnacts)
+				(call (level-0 pick))))))
+
 
