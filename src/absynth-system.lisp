@@ -11,4 +11,4 @@
 (load "progs/level-2.lisp")
 ;(load "synthesizer/synthesizer.lisp")
 
-;(load "test/test-absynth.lisp")
+(load "test/test-absynth.lisp")
