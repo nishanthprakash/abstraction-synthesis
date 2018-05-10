@@ -88,8 +88,8 @@
 		((dim (get-dim depth))
 		(vbns (vertical-bottlenecks level dim))
 		(hbns (horizontal-bottlenecks level dim))
-		(a1 (get-step level)
-		(wm (make-office-map depth)))
+		(a1 (get-step level))
+		(wm (make-office-map depth))
 		(hacts (list 	
 					(list 0 a1) 
 					(list 0 (- a1)) 
