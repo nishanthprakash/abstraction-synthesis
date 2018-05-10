@@ -1,12 +1,15 @@
 (defpackage fo-tgraph
   (:documentation " ")
-  (:use common-lisp)
+  (:use 
+  	common-lisp
+  	fractal-office)
   (:export lnearest
   	lactions))
 
 (in-package fo-tgraph)
 
 (defparameter *default-dim* 13)
+(defparameter *default-depth* 1)
 
 ;(defvar *graph* (graph:populate (make-instance 'graph:graph)
 ;	:nodes '(1 2 3 4 5 6 7)
@@ -73,16 +76,20 @@
 		(loop for j from 0 upto (- dim 1) by (get-step level) append
 			`((,i ,j)))))
 
-(defun lnearest (level pos &optional (dim *default-dim*))
+(defun lnearest (level pos &optional (depth *default-depth*))
 	(let* 
-		((bns (bottlenecks level dim)))
-		(reduce (lambda (x y) (if (< (sq-dist pos y) (sq-dist pos x)) y x)) bns)))
+		((dim (get-dim depth))
+		(bns (bottlenecks level dim))
+		(wm (make-office-map depth)))
+		(reduce (lambda (x y) (if (and (< (sq-dist pos x) (sq-dist pos y)) (aref wm (first x) (second x))) x y)) bns)))
 
-(defun lactions (level pos &optional (dim *default-dim*))
+(defun lactions (level pos &optional (depth *default-depth*))
 	(let* 
-		((vbns (vertical-bottlenecks level dim))
+		((dim (get-dim depth))
+		(vbns (vertical-bottlenecks level dim))
 		(hbns (horizontal-bottlenecks level dim))
-		(a1 (get-step level))
+		(a1 (get-step level)
+		(wm (make-office-map depth)))
 		(hacts (list 	
 					(list 0 a1) 
 					(list 0 (- a1)) 
@@ -98,8 +105,8 @@
 					(list (/ a1 2) (- (/ a1 2))) 
 					(list (- (/ a1 2)) (- (/ a1 2))))))
 		(cond 
-			((member pos vbns :test 'equal) (remove-if-not (lambda (x) (and (< (first x) dim) (< (second x) dim) (>= (first x) 0) (>= (second x) 0))) (map 'list (lambda (x) (list (+ (first pos) (first x)) (+ (second pos) (second x)))) vacts)))
-			((member pos hbns :test 'equal) (remove-if-not (lambda (x) (and (< (first x) dim) (< (second x) dim) (>= (first x) 0) (>= (second x) 0))) (map 'list (lambda (x) (list (+ (first pos) (first x)) (+ (second pos) (second x)))) hacts)))
+			((member pos vbns :test 'equal) (remove-if-not (lambda (x) (and (< (first x) dim) (< (second x) dim) (>= (first x) 0) (>= (second x) 0) (aref wm (first x) (second x)))) (map 'list (lambda (x) (list (+ (first pos) (first x)) (+ (second pos) (second x)))) vacts)))
+			((member pos hbns :test 'equal) (remove-if-not (lambda (x) (and (< (first x) dim) (< (second x) dim) (>= (first x) 0) (>= (second x) 0) (aref wm (first x) (second x)))) (map 'list (lambda (x) (list (+ (first pos) (first x)) (+ (second pos) (second x)))) hacts)))
 			(t nil))))
 
 (defun sq(n) (* n n))
